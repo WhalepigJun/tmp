@@ -1,0 +1,654 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>공공데이터 품질 진단</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="aa48acb9-79d0-4b63-85de-4692987024e8" class="page sans"><header><div class="page-header-icon undefined"><img class="icon" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/KPFIS.png"/></div><h1 class="page-title">공공데이터 품질 진단</h1></header><div class="page-body"><h1 id="30086748-c30a-4caf-8866-6431ceb69dee" class="">보고서 전체적인 흐름</h1><p id="750f357c-de91-4702-8a91-0892c899a6da" class="">데이터, 진단 도구, 진단도구 이용, 진단 도구를 이용해서 찾은 오류들, 진단 도구를 이용해서 얻은 보고서들, 진단 도구를 이용해서 찾은 오류들 수정, 수정 과정, 수정 완료, 요류 수정된 데이터 다시 진단 후 오류 없음 확인, 데이터 값 확인, 완료된 데이터를 목록등록관리 시스템에 등록, 목록등록관리 시스템 등록 절차</p><p id="9c1a1978-78ac-45fb-92eb-50ee552a1a1b" class="">위 내용으로만 써도 분량 충분히 나올거 같음..:)</p><h1 id="4c5f516c-ff0f-43a4-87d7-e3763a57abdc" class="">0824</h1><p id="4247f6e6-002f-4bd7-9534-5b5edd4c3b19" class="">데이터는 csv 파일로 제공받음</p><p id="48d70ea1-9825-46fe-9636-7d575d813848" class="">본인이 맡은 데이터 범위 : 분야별 재정지출 / 국토 및 지역개발 분야 ~ 분야별 재정지출 / 환경 분야 까지의 데이터를 담당</p><p id="48c7a627-c131-41c4-b628-d874c9fdd0d5" class="">데이터 파일 대략적인 스크린샷</p><p id="68e7f0f3-0dac-4694-a51f-9a04c604f5b1" class="">담당할 데이터 파일 강조</p><p id="495f1a91-00a2-49f9-9563-e3acfd041fcf" class="">
+</p><p id="ede8f72e-02b0-4224-85f6-6c38b7caf609" class="">공공데이터포털(data.go.kr)의 개방데이터(파일) 진단 정비 도구를 이용</p><p id="fda668a4-2210-49ce-a762-689ba76a347f" class="">다운 링크</p><p id="426eb5b9-ce51-4b55-9d83-dabca4a3d79c" class=""><a href="https://www.data.go.kr/bbs/rcr/selectRecsroom.do?pageIndex=1&amp;originId=PDS_0000000000755+++&amp;atchFileId=FILE_000000002414717&amp;searchCondition3=&amp;searchCondition2=&amp;cndCtgryLaword=Y&amp;cndCtgryEdc=Y&amp;cndCtgryBigdata=Y&amp;cndCtgryStd=Y&amp;cndCtgryNews=Y&amp;cndCtgryEtc=Y&amp;bindCndCtgry=&amp;sort-post=2&amp;searchKeyword1=&amp;Laword=PDTY01&amp;Edc=PDTY02&amp;Bigdata=PDTY03&amp;Std=PDTY04&amp;News=PDTY05&amp;Etc=PDTY06">https://www.data.go.kr/bbs/rcr/selectRecsroom.do?pageIndex=1&amp;originId=PDS_0000000000755+++&amp;atchFileId=FILE_000000002414717&amp;searchCondition3=&amp;searchCondition2=&amp;cndCtgryLaword=Y&amp;cndCtgryEdc=Y&amp;cndCtgryBigdata=Y&amp;cndCtgryStd=Y&amp;cndCtgryNews=Y&amp;cndCtgryEtc=Y&amp;bindCndCtgry=&amp;sort-post=2&amp;searchKeyword1=&amp;Laword=PDTY01&amp;Edc=PDTY02&amp;Bigdata=PDTY03&amp;Std=PDTY04&amp;News=PDTY05&amp;Etc=PDTY06</a></p><p id="01cf0f67-59ac-43e5-b0c6-1f41bcbc9646" class="">
+</p><p id="cfce6d86-dd13-418d-bf7a-c34328c9add9" class="">개방데이터(파일) 진단 정비 도구를 다운받고 설치하는 과정</p><p id="d5487c39-0b70-4d88-b82e-e4d5af096c3f" class="">추가 예정</p><p id="f67aefbd-67c2-4cf6-8d3c-b2719df3e77a" class="">설명서 참고</p><p id="fd6f4898-3c68-445b-a36f-10434e1b995c" class="">
+</p><p id="1026a967-03af-4237-be6f-b03ec5d6db1f" class="">공공데이터 개방데이터(파일) 진단 도구</p><figure id="d4fd6aa8-6248-4b88-bb06-370ede7685f2" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%E1%84%83%E1%85%A9%E1%84%80%E1%85%AE.png"><img style="width:624px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%E1%84%83%E1%85%A9%E1%84%80%E1%85%AE.png"/></a></figure><p id="0401dd75-71fc-4879-b4c8-9d05644895eb" class="">
+</p><p id="fe7a0543-f95b-449d-b5a7-8bc8f258ecc6" class="">파일 선택 클릭</p><figure id="a98f6645-9051-4479-b893-dfb2b67f1349" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF%E1%84%89%E1%85%A5%E1%86%AB%E1%84%90%E1%85%A2%E1%86%A8.png"><img style="width:1005px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF%E1%84%89%E1%85%A5%E1%86%AB%E1%84%90%E1%85%A2%E1%86%A8.png"/></a></figure><p id="e1fab488-7c84-4a53-a488-06898b58f2db" class="">품질 진단 대상 데이터 파일 열기</p><figure id="7917eb04-34ac-4d76-aa4f-2efb0debd191" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%86%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5.png"><img style="width:1005px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%86%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5.png"/></a></figure><p id="cbf9c81b-2e1e-499e-89d0-80349a58b22a" class="">데이터가 올바르게 들어오지 않는 모습</p><p id="eba0cfba-037b-4891-984e-53bc9806bf8c" class="">csv 파일 자체에 대한 형식 오류 발견</p><figure id="c73aa8c5-eda6-4fd9-a7cb-a3b622ef1f27" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%86%E1%85%A6%E1%84%86%E1%85%A9%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC.png"><img style="width:749px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%86%E1%85%A6%E1%84%86%E1%85%A9%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC.png"/></a></figure><p id="d6c309af-c2fb-4de0-9649-229fd08427d8" class="">메모장에서 csv 파일 형식에 맞게 수정</p><figure id="5edd8502-bf79-47d2-bc51-450af424ced7" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%86%E1%85%A6%E1%84%86%E1%85%A9%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD.png"><img style="width:750px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%86%E1%85%A6%E1%84%86%E1%85%A9%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD.png"/></a></figure><p id="bc1f2b79-4243-4ab4-b4da-9b5546d52770" class="">수정 완료</p><p id="c63fc81c-9c3f-47d5-8395-1a38ff357135" class="">초기화 버튼을 눌러서 수정된 csv 파일을 가져옴</p><figure id="70e610b3-7f68-4dc9-b777-a344512c73a6" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD%E1%84%83%E1%85%AC%E1%86%AB_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF%E1%84%85%E1%85%A9_%E1%84%83%E1%85%A1%E1%84%89%E1%85%B5_%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB_%E1%84%8C%E1%85%AE%E1%86%AB%E1%84%87%E1%85%B5.png"><img style="width:1010px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD%E1%84%83%E1%85%AC%E1%86%AB_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF%E1%84%85%E1%85%A9_%E1%84%83%E1%85%A1%E1%84%89%E1%85%B5_%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB_%E1%84%8C%E1%85%AE%E1%86%AB%E1%84%87%E1%85%B5.png"/></a></figure><p id="6d8a94cc-45d9-482b-a8a6-414ce6f00870" class="">시작 버튼을 누름</p><figure id="e7e19e93-8e47-48e5-9f5e-e93bfca14df4" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5__%E1%84%80%E1%85%B2%E1%84%8E%E1%85%B5%E1%86%A8%E1%84%8E%E1%85%AE%E1%84%8E%E1%85%A5%E1%86%AB.png"><img style="width:1004px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%AE%E1%86%A8%E1%84%90%E1%85%A9_%E1%84%86%E1%85%B5%E1%86%BE_%E1%84%8C%E1%85%B5%E1%84%8B%E1%85%A7%E1%86%A8%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF_%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5__%E1%84%80%E1%85%B2%E1%84%8E%E1%85%B5%E1%86%A8%E1%84%8E%E1%85%AE%E1%84%8E%E1%85%A5%E1%86%AB.png"/></a></figure><p id="828a204f-091d-4ea2-9a63-dde3d7137acf" class="">규칙추천 버튼을 통해 추천 진단 규칙을 받아볼 수 있음</p><figure id="48f7c15f-62a3-447f-8d68-1c42d34ebb82" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%B2%E1%84%8E%E1%85%B5%E1%86%A8%E1%84%8E%E1%85%AE%E1%84%8E%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD.png"><img style="width:1004px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%B2%E1%84%8E%E1%85%B5%E1%86%A8%E1%84%8E%E1%85%AE%E1%84%8E%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD.png"/></a></figure><figure id="e5e2178d-c72c-4a15-b93c-ebed0c7edfad" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%B2%E1%84%8E%E1%85%B5%E1%86%A8%E1%84%8E%E1%85%AE%E1%84%8E%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%B3%E1%84%85%E1%85%A9_%E1%84%8F%E1%85%A1%E1%86%AF%E1%84%85%E1%85%A5%E1%86%B7%E1%84%8B%E1%85%B4_%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB_%E1%84%80%E1%85%B2%E1%84%8E%E1%85%B5%E1%86%A8%E1%84%8B%E1%85%B5_%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%92%E1%85%A2%E1%84%8C%E1%85%B5%E1%86%AB_%E1%84%86%E1%85%A9%E1%84%89%E1%85%B3%E1%86%B8.png"><img style="width:1004px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%80%E1%85%B2%E1%84%8E%E1%85%B5%E1%86%A8%E1%84%8E%E1%85%AE%E1%84%8E%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%B3%E1%84%85%E1%85%A9_%E1%84%8F%E1%85%A1%E1%86%AF%E1%84%85%E1%85%A5%E1%86%B7%E1%84%8B%E1%85%B4_%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB_%E1%84%80%E1%85%B2%E1%84%8E%E1%85%B5%E1%86%A8%E1%84%8B%E1%85%B5_%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%92%E1%85%A2%E1%84%8C%E1%85%B5%E1%86%AB_%E1%84%86%E1%85%A9%E1%84%89%E1%85%B3%E1%86%B8.png"/></a></figure><p id="244143c1-58e0-4e10-97d9-d8c469016d03" class="">진단</p><figure id="8c7bd971-349c-4d72-8db5-fe428c10e9d6" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB_%E1%84%89%E1%85%B5%E1%86%AF%E1%84%92%E1%85%A2%E1%86%BC.png"><img style="width:1006px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB_%E1%84%89%E1%85%B5%E1%86%AF%E1%84%92%E1%85%A2%E1%86%BC.png"/></a></figure><p id="67f73c98-1a20-4a09-a09f-9464f55cbcdb" class="">진단 결과</p><figure id="4e9237bb-5925-4f19-91ec-d5883dcd60e3" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%E1%84%80%E1%85%A7%E1%86%AF%E1%84%80%E1%85%AA.png"><img style="width:1003px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%E1%84%80%E1%85%A7%E1%86%AF%E1%84%80%E1%85%AA.png"/></a></figure><p id="3fb556ea-3805-4a32-a712-4273825517a1" class="">
+</p><p id="e1b65c4c-b295-4fbb-a869-e6e6e17d1881" class="">보고서 저장</p><figure id="d9efe16f-2511-4824-8383-c4a3efcca1fa" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%87%E1%85%A9%E1%84%80%E1%85%A9%E1%84%89%E1%85%A5_%E1%84%8C%E1%85%A5%E1%84%8C%E1%85%A1%E1%86%BC.png"><img style="width:998px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%87%E1%85%A9%E1%84%80%E1%85%A9%E1%84%89%E1%85%A5_%E1%84%8C%E1%85%A5%E1%84%8C%E1%85%A1%E1%86%BC.png"/></a></figure><p id="7023977f-a617-436e-98ee-1f02d0e67815" class="">
+</p><p id="87f0d5b0-fc6a-42e3-a533-7ef8ea1a4a21" class="">보고서 내용</p><figure id="02186676-b37b-4184-9e78-9fbc94045a9d" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%87%E1%85%A9%E1%84%80%E1%85%A9%E1%84%89%E1%85%A5_%E1%84%82%E1%85%A2%E1%84%8B%E1%85%AD%E1%86%BC.png"><img style="width:953px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%87%E1%85%A9%E1%84%80%E1%85%A9%E1%84%89%E1%85%A5_%E1%84%82%E1%85%A2%E1%84%8B%E1%85%AD%E1%86%BC.png"/></a></figure><p id="8ac96ffd-b1b6-4364-907c-b02a2d96ebb5" class="">
+</p><p id="f7214a7f-d31c-49a7-9438-903178b147e2" class="">다른 예시</p><figure id="5ab698f3-c26f-41b1-b779-583355a9b5ef" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB_%E1%84%83%E1%85%A9%E1%84%80%E1%85%AE%E1%84%85%E1%85%A9%E1%84%82%E1%85%B3%E1%86%AB_%E1%84%8B%E1%85%A9%E1%84%85%E1%85%B2%E1%84%80%E1%85%A1_%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%8C%E1%85%B5%E1%84%86%E1%85%A1%E1%86%AB_%E1%84%8B%E1%85%A7%E1%86%AB%E1%84%83%E1%85%A9%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A5_21%E1%84%82%E1%85%A7%E1%86%AB%E1%84%8B%E1%85%B5_%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%8B%E1%85%B3%E1%86%B7.png"><img style="width:994px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB_%E1%84%83%E1%85%A9%E1%84%80%E1%85%AE%E1%84%85%E1%85%A9%E1%84%82%E1%85%B3%E1%86%AB_%E1%84%8B%E1%85%A9%E1%84%85%E1%85%B2%E1%84%80%E1%85%A1_%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%8C%E1%85%B5%E1%84%86%E1%85%A1%E1%86%AB_%E1%84%8B%E1%85%A7%E1%86%AB%E1%84%83%E1%85%A9%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A5_21%E1%84%82%E1%85%A7%E1%86%AB%E1%84%8B%E1%85%B5_%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%8B%E1%85%B3%E1%86%B7.png"/></a></figure><p id="d88fa642-9d62-48c4-99c8-530b288b4dd7" class="">진단 결과에는 오류가 없음. 하지만 데이터 패턴을 확인하는 과정에서 2020년이 2건임을 알아냄</p><figure id="791d2dd4-6e6e-4495-ad26-d0989880d1ef" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5_%E1%84%91%E1%85%A2%E1%84%90%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%B3%E1%86%AF_%E1%84%92%E1%85%AA%E1%86%A8%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%92%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB_%E1%84%80%E1%85%AA%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%B3%E1%86%AF_%E1%84%90%E1%85%A9%E1%86%BC%E1%84%92%E1%85%A2_2020%E1%84%82%E1%85%A7%E1%86%AB%E1%84%8B%E1%85%B5_2%E1%84%80%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%B5%E1%86%B7%E1%84%8B%E1%85%B3%E1%86%AF_%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%8B%E1%85%A1%E1%84%82%E1%85%A2%E1%86%B7.png"><img style="width:1003px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5_%E1%84%91%E1%85%A2%E1%84%90%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%B3%E1%86%AF_%E1%84%92%E1%85%AA%E1%86%A8%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%92%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB_%E1%84%80%E1%85%AA%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%B3%E1%86%AF_%E1%84%90%E1%85%A9%E1%86%BC%E1%84%92%E1%85%A2_2020%E1%84%82%E1%85%A7%E1%86%AB%E1%84%8B%E1%85%B5_2%E1%84%80%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%B5%E1%86%B7%E1%84%8B%E1%85%B3%E1%86%AF_%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%8B%E1%85%A1%E1%84%82%E1%85%A2%E1%86%B7.png"/></a></figure><p id="595687bf-0bec-497f-b70e-d4668c1afaf2" class="">또한, 데이터 칼럼 명에도 오타가 있음을 확인</p><figure id="8d048fee-4680-4f3b-8ed6-ea0601b3b189" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8C%E1%85%A5%E1%86%AB_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF_%E1%84%8F%E1%85%A1%E1%86%AF%E1%84%85%E1%85%A5%E1%86%B7_%E1%84%86%E1%85%A7%E1%86%BC%E1%84%8B%E1%85%A6%E1%84%83%E1%85%A9_%E1%84%8B%E1%85%A9%E1%84%85%E1%85%B2_%E1%84%92%E1%85%AA%E1%86%A8%E1%84%8B%E1%85%B5%E1%86%AB.png"><img style="width:902px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8C%E1%85%A5%E1%86%AB_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF_%E1%84%8F%E1%85%A1%E1%86%AF%E1%84%85%E1%85%A5%E1%86%B7_%E1%84%86%E1%85%A7%E1%86%BC%E1%84%8B%E1%85%A6%E1%84%83%E1%85%A9_%E1%84%8B%E1%85%A9%E1%84%85%E1%85%B2_%E1%84%92%E1%85%AA%E1%86%A8%E1%84%8B%E1%85%B5%E1%86%AB.png"/></a></figure><p id="42c13465-56c8-4fa1-b546-1fb9a38a1e73" class="">오류 수정 완료</p><figure id="6847b465-d084-4595-a081-ce68ec398c95" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD.png"><img style="width:903px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD.png"/></a></figure><p id="babf1023-fa0d-4f52-a4e1-dcb6cf569935" class="">진단도구를 통해 다시 확인</p><figure id="b3f00fb2-30c4-418e-9a6a-51c930d779a2" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD_%E1%84%92%E1%85%AE_%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%E1%84%83%E1%85%A9%E1%84%80%E1%85%AE%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A5_%E1%84%83%E1%85%A1%E1%84%89%E1%85%B5_%E1%84%92%E1%85%AA%E1%86%A8%E1%84%8B%E1%85%B5%E1%86%AB.png"><img style="width:1005px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A1%E1%84%8B%E1%85%AF%E1%86%AB_%E1%84%87%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB_%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%AD_%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7%E1%84%87%E1%85%A7%E1%86%AF_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD_%E1%84%92%E1%85%AE_%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%E1%84%83%E1%85%A9%E1%84%80%E1%85%AE%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A5_%E1%84%83%E1%85%A1%E1%84%89%E1%85%B5_%E1%84%92%E1%85%AA%E1%86%A8%E1%84%8B%E1%85%B5%E1%86%AB.png"/></a></figure><p id="14c91484-b34b-47f5-85fb-39de3a18728e" class="">
+</p><p id="6413518b-2c02-42d0-8036-1a7e6907e075" class="">다른 예시</p><p id="4af271c1-274c-4221-9b70-0f2e7084af76" class="">이번 파일은 csv 파일 형식 오류가 발견되어서 파일이 열리지 않음</p><figure id="9d4a70e8-5981-4a40-9b08-b9bc2ef6b583" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%82%E1%85%A9%E1%86%BC%E1%84%85%E1%85%B5%E1%86%B7%E1%84%89%E1%85%AE%E1%84%89%E1%85%A1%E1%86%AB%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_csv_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF%E1%84%92%E1%85%A7%E1%86%BC%E1%84%89%E1%85%B5%E1%86%A8_%E1%84%8B%E1%85%A9%E1%84%85%E1%85%B2_%E1%84%82%E1%85%A2%E1%84%8B%E1%85%AD%E1%86%BC.png"><img style="width:1005px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%82%E1%85%A9%E1%86%BC%E1%84%85%E1%85%B5%E1%86%B7%E1%84%89%E1%85%AE%E1%84%89%E1%85%A1%E1%86%AB%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_csv_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF%E1%84%92%E1%85%A7%E1%86%BC%E1%84%89%E1%85%B5%E1%86%A8_%E1%84%8B%E1%85%A9%E1%84%85%E1%85%B2_%E1%84%82%E1%85%A2%E1%84%8B%E1%85%AD%E1%86%BC.png"/></a></figure><p id="914c6f0e-7e53-4602-b483-60d88391f7b8" class="">메모장으로 csv 파일 형식에 맞게 수정해줌</p><figure id="c177c96f-32fb-437d-97d1-f389c6cf1a29" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%82%E1%85%A9%E1%86%BC%E1%84%85%E1%85%B5%E1%86%B7%E1%84%89%E1%85%AE%E1%84%89%E1%85%A1%E1%86%AB%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8C%E1%85%A5%E1%86%AB_csv_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF.png"><img style="width:900px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%82%E1%85%A9%E1%86%BC%E1%84%85%E1%85%B5%E1%86%B7%E1%84%89%E1%85%AE%E1%84%89%E1%85%A1%E1%86%AB%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8C%E1%85%A5%E1%86%AB_csv_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF.png"/></a></figure><p id="c6e80563-e4c2-4e8b-9067-08299859e768" class="">수정 완료</p><figure id="1b9e2b59-f14c-4c2b-a0b3-90481dd9beac" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%82%E1%85%A9%E1%86%BC%E1%84%85%E1%85%B5%E1%86%B7%E1%84%89%E1%85%AE%E1%84%89%E1%85%A1%E1%86%AB%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD_csv_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF.png"><img style="width:901px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/%E1%84%82%E1%85%A9%E1%86%BC%E1%84%85%E1%85%B5%E1%86%B7%E1%84%89%E1%85%AE%E1%84%89%E1%85%A1%E1%86%AB%E1%84%87%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%A3_%E1%84%80%E1%85%AE%E1%86%A8%E1%84%80%E1%85%A9%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7_%E1%84%8E%E1%85%AE%E1%84%8B%E1%85%B5_%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD_csv_%E1%84%91%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF.png"/></a></figure><p id="5b200f57-ed0d-4a98-babb-5a984245ac07" class="">
+</p><p id="ba37de8c-1adf-4f31-a7fb-45a0f6e84147" class="">&lt;목록 등록 관리 시스템&gt;</p><p id="4aa541e8-f89a-4e96-ad64-e68c6169f1e2" class="">진단 도구로 오류를 모두 수정한 파일들을 공공데이터 목록등록관리 시스템에 등록</p><p id="a0f0edb3-ae05-4601-bbf6-e278f776453b" class="">데이터 담당자님이 변경 요청하신 건에 맞는 데이터를 등록하고 데이터에 맞는 설명과 기준일을 설정하여 등록</p><p id="0da28a02-cb03-48ca-8484-0414b65309af" class="">키워드 작성 : 주요재정통계를 재정지출로 변경하고 자동 번역</p><p id="b01ec197-b40e-4bd9-9795-e08dc29757da" class="">데이터 설명 작성 : 데이터에 맞게 연도를 변경하고 자동 번역</p><p id="2bf9db4e-6968-419a-81fe-728066b7e566" class="">파일 업로드</p><p id="d7cccaaa-04b9-4bb2-bf8d-39fbab323b2a" class="">데이터 기준일 설정 : 2021-04-21</p><p id="de413f8a-7f3b-4b0a-9132-27b49a2abc05" class="">등록 </p><p id="3234378c-5b54-498a-8bee-beb1cd6c5b6c" class="">
+</p><p id="699dcac8-9835-4e06-89ff-05c3dd4ccb5b" class="">0824 등록 완료된 파일</p><ul id="144a4c3b-e95a-45ab-8b4a-8fc25cab5102" class="bulleted-list"><li>분야별 재정지출 / 국토 및 지역개발 분야</li></ul><ul id="e0e951e0-aa95-4bbb-a963-e8824d5a0f09" class="bulleted-list"><li>분야별 재정지출 / 농림수산 분야 (14개 파일 중 11개 완료)</li></ul><ul id="055fa74c-a949-421f-b520-8a2e02e4faae" class="toggle"><li><details open=""><summary>보고서 파일</summary><figure id="aec4bb16-2e05-4dcd-9edd-923c3e5fc147"><div class="source"><a href="https://www.notion.so/96e56c155b6543a48e66dc1e75fea8c0">https://s3-us-west-2.amazonaws.com/secure.notion-static.com/96e56c15-5b65-43a4-8e66-dc1e75fea8c0/Report.zip</a></div></figure></details></li></ul><p id="dd8a1ed3-301e-4547-8595-2a9c2a43a478" class="">
+</p><h1 id="dba24dae-4c72-43b6-9a6a-52ea0f2d0a8a" class="">0825</h1><p id="4cedf333-ccfb-4242-8879-4c95b62ff0c0" class="">
+</p><h1 id="faa1ce60-facd-4198-852c-18154a59cb44" class="">0826</h1><p id="35a4bc35-9aec-4043-a1e5-e8dd76313c68" class="">문화 및 관광 분야에서 데이터 2개 미완료 사유</p><p id="b1a5c72d-71b4-469d-853a-be01468e70c8" class="">
+</p><figure id="000a2054-5786-41dc-9b40-750b9ba78609" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/Untitled.png"><img style="width:1032px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/Untitled.png"/></a></figure><p id="3cca9158-25fe-4aeb-b15d-b9407726ceb9" class="">칼럼명에 ,(쉼표)가 들어가 있어서 csv는 ,(쉼표)를 구분자로 데이터를 읽기때문에 ,(쉼표)를 기준으로 다른 칼럼이라고 인식</p><p id="a987cb2f-0f3f-451a-bd70-605a7804e8bf" class="">따라서 칼럼 안의 쉼표를 다른 문자로 입력해줄 필요 있음 → 이때 공통의 기준을 정해야하지 않을까라는 생각으로 아직 등록하지 않음.</p><p id="88781027-58b1-427d-8060-ae8cc02a7a66" class="">즉, ,(쉼표) 대신 어떤 문자를 써야하는지 연구원님께 물어보고 경민이랑 상의하고 진행할 생각.</p><p id="7f441381-deb0-4107-84c1-f3d9e8d76f6e" class="">
+</p><figure id="39afbe14-db14-4b29-938b-b8d17b5c0ac0" class="image"><a href="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/Untitled%201.png"><img style="width:1130px" src="%E1%84%80%E1%85%A9%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%20%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8C%E1%85%B5%E1%86%AF%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20d4fd6aa862484b88bb06370ede7685f2/Untitled%201.png"/></a></figure><p id="ac8bccec-d714-4cd6-bca9-48e7aed26fde" class="">이 데이터도 같은 경우</p><p id="2be1b41b-25c4-4b37-b6ff-62142cd2c66a" class="">
+</p><p id="b8be1f6a-887e-4a0c-afe0-69f84fb215eb" class="">이 경우에 해당하는 데이터</p><ul id="d96414e9-4f9a-4614-92ac-72c28a6719c1" class="bulleted-list"><li>문화 및 관광 분야 &gt; 문화 및 관광 분야 주요 세부사업 현황.csv</li></ul><ul id="fa2e981d-ff2a-4b61-a7f7-ba15b08e96cd" class="bulleted-list"><li>문화 및 관광 분야 &gt; 문화예술 부문 주요 프로그램별 추이.csv</li></ul><p id="9d3523ef-7173-438d-b194-e57d123d49cd" class="">현재 파일명 앞에 &#x27;_&#x27; 를 붙여주어서 미완료된 파일이라는 것을 표시한 상태</p><p id="556018cd-6edb-44fd-9f96-b2dc5068cd6d" class="">등록 전에 &#x27;_&#x27; 지우고 등록 예정</p><p id="4d4ef0d8-3d59-4b8d-9a06-f3de88bd9d4b" class="">
+</p><h1 id="8259533e-320d-47ba-b3f7-77cc6e178a06" class="">0827 인수인계</h1><p id="1311816c-6d18-452e-b6d5-eca617dacd7a" class="">먼저, 경민아 같이 나가자고 했는데 먼저 나가서 미안해..:( 한달 조금 넘는 짧은 시간동안 여기 회사, 연구원님들, 너까지 다 좋은 곳이고 좋은 사람들이어서 금방 정들었나봐. 그래서 그런지 뭔가 기쁜 마음보다 아쉬운 마음이 큰거 같아. 그리고 가야할 맛집들이 많았는데.. 같이 가고 싶었는데 못가서 아쉽다ㅠ 너가 가고 싶다고 해서 간 집들 전부 맛있는 곳이어서 앞으로 갈 곳들도 기대가 됐었거든.. (맛있는게 짱이ㅑ..) 그리고.. 너가 준비하는 것들 너가 하고 싶은 것들 준비 잘해서 꼭 이루길 바래. 항상 너 보면 열심히 공부하고 준비하고 있어서 걱정은 없지만 나는 내 주변에서 같이 공부하던 사람들이 하나 둘씩 자기 자리를 찾아서 떠날 때 많이 불안했었거든.. 그래서 혹시나 내가 먼저 나가서 너한테 내가 전에 받은 감정들을 주지 않았을까 하는 마음이 조금 있긴해..😢 너가 더 잘 알겠지만 결국 그런 마음들 없어지게 하는건 더 열심히 사는거 밖에 없더라구.. 너가 준비하는 것들 모두 잘 되길 응원할게. 너 실력도 있고, 좋은 사람이니까 자신감 가지고 좋은 소식 생기면 말해줘! 기다리고 있을게. 종종 얼굴보자:) 언제 한번 퇴근하고 저녁 먹자구~</p><p id="ab06b7d1-8438-4b4d-8a26-dc721573f2a1" class="">
+</p><h2 id="081f58d4-5509-42f5-b979-0e706c9459de" class="">파일 현황</h2><p id="6f34b210-a081-4969-b249-a5e589e6b96a" class="">데이터 품질 진단 및 수정 후 목록등록관리에 등록까지<div class="indented"><p id="d20361e2-1c0a-4ba3-a889-934004d037ab" class="">분야별 재정지출_csv_2021_0802_수정 : 데이터 파일<div class="indented"><p id="8f6ed9c3-e541-4091-9084-aab2ae597337" class="">국토 및 지역개발 분야, 농림수산 분야는 등록까지는 완료 했는데, 진단하고 오류 수정하고 난 데이터 파일을 남겨두질 못했어</p><p id="dbfa4293-575f-40ca-8bc2-ffc499c31fc1" class="">문화 및 관광 분야, 보건 분야는 진단하고 오류 수정한 데이터야, 근데 문화 및 관광 분야 파일 중에서 2개 파일을 오류 수정하고 등록해야해</p><p id="e1240610-439b-4841-9a8e-a215a51f3a3d" class="">고치지 않은 이유랑 오류 내용은 <a href="">0826</a>에서 확인하면 될거야. (0826 링크도 걸어뒀어)</p></div></p><p id="ca68a9ed-cd85-4931-b460-96d9b643373c" class="">진단보고서<div class="indented"><p id="720d9370-c86f-41e9-967d-0c90c04a6795" class="">국토 및 지역개발 분야부터 보건 분야까지 진단한 보고서 모두 모아뒀어.</p><p id="09a29ae7-364f-4ea9-8277-791eae4c0d14" class="">위에서 언급했던 문화 및 관광분야에서 미완료한 2개는 진단보고서 없어!</p></div></p><p id="9a22fbf8-7169-4af0-b437-3bd5ae0da1fa" class="">캡처사진<div class="indented"><p id="16aadd83-29d7-4c34-bc50-bff12b6c8268" class="">이건 내가 보고서 쓸때 오류 사진이랑 오류 해결 사진이랑 해서 보고서 작성할때 쓰려고 했는데</p><p id="49f34ab9-1de5-4965-9c5b-983528da61ce" class="">사진 파일 이름을 그 상황에 대한 내용으로 만들어둬서 혹시 사용하게되면 파일 이름보면서 이해하면 도움이 될거야</p><p id="6ae9e441-2a68-4bab-b0f2-314510251a9a" class="">
+</p></div></p></div></p></div></article></body></html>
